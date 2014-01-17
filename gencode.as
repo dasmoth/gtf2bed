@@ -15,5 +15,6 @@ table gencode
    int[blockCount] chromStarts; "Start positions relative to chromStart"
    string geneId ;    "Gene ID"
    string geneName;   "Gene name"
-   string method;     "Transcript type (currently poked into method field for styling reasons)"
+   string method;     "Transcript type"
+   string tags;       "Transcript attributes"
    )

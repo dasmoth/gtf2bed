@@ -22,9 +22,12 @@
           attr-map (when attrs (parse-attrs attrs))]
       (make-gff-record seq-name type source (parse-int start) (parse-int end) score strand frame attr-map))))
 
+(defn- assoc-cat [m k v] 
+  (let [o (m k)] 
+    (assoc m k (if o (str o "," v) v))))
 
 (defn- parse-attrs2 [attr-string]
-  (into {} (for [[_ k v] (re-seq  #"(\w+) \"([^\"]+)\"" attr-string)] ;"
+  (reduce (fn [m [k v]] (assoc-cat m k v)) {} (for [[_ k v] (re-seq  #"(\w+) \"([^\"]+)\"" attr-string)] ;"
     [k v])))
                    
 

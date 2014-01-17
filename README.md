@@ -26,7 +26,7 @@ Converting genes
 Making bigbed files for Dalliance
 ---------------------------------
 
-		bedToBigBed -type=bed12+3 -as=gencode.as gencode.bed hg19.chromInfo gencode.bb
+		bedToBigBed -type=bed12+4 -as=gencode.as gencode.bed hg19.chromInfo gencode.bb
 
 You'll probably also want to make a search-by-gene-name index using `ixIxx`.  Helper script
 for that coming soon....

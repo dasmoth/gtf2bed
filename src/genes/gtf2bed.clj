@@ -8,7 +8,8 @@
         exons        (sort-by :start raw-exons)
         cds          (if raw-cds (sort-by :start raw-cds))
 	      gene-id      (get-in repr '[:attrs "gene_id"])
-        gene-name    (get-in repr '[:attrs "gene_name"])]
+        gene-name    (get-in repr '[:attrs "gene_name"])
+        tags         (get-in repr '[:attrs "tag"])]
     [(:seq-name repr)
      (- (:start (first exons)) 1)
      (:end (last exons))
@@ -25,7 +26,8 @@
      (str/join "," (for [e exons] (- (:start e) (:start (first exons)))))
      gene-id
      gene-name
-     (get-in repr '[:attrs "transcript_type"])]))
+     (get-in repr '[:attrs "transcript_type"])
+     (or tags "-")]))
 
 (defn gtf2beds [gff]
 (->>
