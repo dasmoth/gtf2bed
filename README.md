@@ -28,5 +28,20 @@ Making bigbed files for Dalliance
 
 		bedToBigBed -type=bed12+4 -as=gencode.as gencode.bed hg19.chromInfo gencode.bb
 
-You'll probably also want to make a search-by-gene-name index using `ixIxx`.  Helper script
-for that coming soon....
+Making gene-name index
+----------------------
+
+                cut -f 4,14 gencode.bed >gencode.txt
+                ixIxx gencode.txt gencode.ix gencode.ixx
+
+Note that you need to keep both the .ix and .ixx files.
+
+Configuring a source in Dalliance
+----------------------------------
+
+                      {name: 'Genes',
+                       desc: 'Gene structures from GENCODE 19',
+                       bwgURI: 'http://www.biodalliance.org/datasets/gencode19.bb',
+                       stylesheet_uri: 'http://www.biodalliance.org/stylesheets/gencode.xml',
+                       collapseSuperGroups: true,
+                       trixURI: 'http://www.biodalliance.org/datasets/genecode19.ix'}
