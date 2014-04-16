@@ -7,9 +7,10 @@
   (let [reversed?    (= (:strand repr) "-")
         exons        (sort-by :start raw-exons)
         cds          (if raw-cds (sort-by :start raw-cds))
-	      gene-id      (get-in repr '[:attrs "gene_id"])
+        gene-id      (get-in repr '[:attrs "gene_id"])
         gene-name    (get-in repr '[:attrs "gene_name"])
-        tags         (get-in repr '[:attrs "tag"])]
+        tags         (get-in repr '[:attrs "tag"])
+        type         (get-in repr '[:attrs "transcript_type"])]
     [(:seq-name repr)
      (- (:start (first exons)) 1)
      (:end (last exons))
@@ -26,16 +27,22 @@
      (str/join "," (for [e exons] (- (:start e) (:start (first exons)))))
      gene-id
      gene-name
-     (get-in repr '[:attrs "transcript_type"])
+     (or type "-")
      (or tags "-")]))
 
 (defn gtf2beds [gff]
-(->>
-  (let [{genes "gene" transcripts "transcript" exons "exon" cds "CDS"} (group-by :type gff)
+  (->>
+  (let [{genes        "gene" 
+         transcripts  "transcript" 
+         exons        "exon" 
+         cds          "CDS"} (group-by :type gff)
         exons-by-id (group-by #(get-in % '[:attrs "transcript_id"]) exons)
         cds-by-id (group-by #(get-in % '[:attrs "transcript_id"]) cds)]
-    (for [t transcripts :let [tid (get-in t '[:attrs "transcript_id"])]]
-      (gtf2bed t (exons-by-id tid) (cds-by-id tid))))
+    (if (empty? transcripts)
+      (for [[tid el] exons-by-id]
+        (gtf2bed (first el) el (cds-by-id tid)))
+      (for [t transcripts :let [tid (get-in t '[:attrs "transcript_id"])]]
+        (gtf2bed t (exons-by-id tid) (cds-by-id tid)))))
   (sort-by second)
   (sort-by first)))
 
