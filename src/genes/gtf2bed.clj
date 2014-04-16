@@ -7,6 +7,7 @@
   (let [reversed?    (= (:strand repr) "-")
         exons        (sort-by :start raw-exons)
         cds          (if raw-cds (sort-by :start raw-cds))
+        trans-id     (get-in repr '[:attrs "transcript_id"])
         gene-id      (get-in repr '[:attrs "gene_id"])
         gene-name    (get-in repr '[:attrs "gene_name"])
         tags         (get-in repr '[:attrs "tag"])
@@ -14,7 +15,7 @@
     [(:seq-name repr)
      (- (:start (first exons)) 1)
      (:end (last exons))
-     (get-in repr '[:attrs "transcript_id"])
+     trans-id
      1000                          ; score
      (:strand repr)
      (if cds
@@ -25,8 +26,8 @@
      (count exons)
      (str/join "," (for [e exons] (- (:end e) (:start e) -1)))
      (str/join "," (for [e exons] (- (:start e) (:start (first exons)))))
-     gene-id
-     gene-name
+     (or gene-id trans-id)
+     (or gene-name gene-id trans-id)
      (or type "-")
      (or tags "-")]))
 
