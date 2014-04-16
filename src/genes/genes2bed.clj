@@ -49,11 +49,16 @@
        (sort-by second)
        (sort-by first)))
 
+(def ^{:private true}
+  wanted-types
+  #{"exon" "CDS" "three_prime_UTR" "five_prime_UTR" "mRNA" "gene"})
+
 (defn -main [& args]
   (unless (= (count args) 1)
     (fail "Usage: genes2bed input.gff"))
   (doseq [b (->> (first args)
 		 (reader)
 		 (parse-gff)
+                 (filter #(wanted-types (:type %)))
 		 (genebeds))]
     (println (str/join "\t" b))))

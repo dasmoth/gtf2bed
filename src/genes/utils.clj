@@ -39,12 +39,19 @@
 
 
 
-(defn toke [s]
-  (loop [st    (java.util.StringTokenizer. s)
-        toks  []]
-    (if (.hasMoreTokens st)
-      (recur st (conj toks (.nextToken st)))
-      toks)))
+(defn toke
+  ([s]
+    (loop [st    (java.util.StringTokenizer. s)
+           toks  []]
+      (if (.hasMoreTokens st)
+        (recur st (conj toks (.nextToken st)))
+        toks)))
+  ([s delim]
+    (loop [st    (java.util.StringTokenizer. s delim)
+           toks  []]
+      (if (.hasMoreTokens st)
+        (recur st (conj toks (.nextToken st)))
+        toks))))
 
 (defn rand-pick [l]
   (nth l (rand-int (count l))))
