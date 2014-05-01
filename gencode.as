@@ -16,5 +16,6 @@ table gencode
    string geneId ;    "Gene ID"
    string geneName;   "Gene name"
    string method;     "Transcript type"
+   string geneBioType; "Gene Biotype"
    string tags;       "Transcript attributes"
    )

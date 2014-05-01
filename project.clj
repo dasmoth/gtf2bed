@@ -1,4 +1,4 @@
-(defproject gtf2bed "0.0.2-SNAPSHOT"
+(defproject gtf2bed "0.0.3-SNAPSHOT"
   :description "Convert GENCODE genes for visualization in Dalliance"
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/clojure-contrib "1.2.0"]]

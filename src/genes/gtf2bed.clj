@@ -11,7 +11,8 @@
         gene-id      (get-in repr '[:attrs "gene_id"])
         gene-name    (get-in repr '[:attrs "gene_name"])
         tags         (get-in repr '[:attrs "tag"])
-        type         (get-in repr '[:attrs "transcript_type"])]
+        type         (get-in repr '[:attrs "transcript_type"])
+        gene-type    (get-in repr '[:attrs "gene_type"])]
     [(:seq-name repr)
      (- (:start (first exons)) 1)
      (:end (last exons))
@@ -29,6 +30,7 @@
      (or gene-id trans-id)
      (or gene-name gene-id trans-id)
      (or type "-")
+     (or gene-type "-")
      (or tags "-")]))
 
 (defn gtf2beds [gff]
