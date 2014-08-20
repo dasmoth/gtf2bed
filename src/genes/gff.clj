@@ -29,15 +29,26 @@
 (defn- parse-attrs2 [attr-string]
   (reduce (fn [m [k v]] (assoc-cat m k v)) {} (for [[_ k v] (re-seq  #"(\w+) \"([^\"]+)\"" attr-string)] ;"
     [k v])))
-                   
+
+(defn- parse-gff2-frame [s]
+  (when (not= "." s)
+    (parse-int s)))
 
 (defn parse-gff2 [r]
   (for [l (line-seq r) :when (and (not (= l ""))
           (not (= (first l) \#)))]
     (let [[seq-name source type start end score strand frame attrs] (str/split l #"\t")
           attr-map (when attrs (parse-attrs2 attrs))]
-      (make-gff-record seq-name type source (parse-int start) (parse-int end) score strand frame attr-map))))
-
+      (make-gff-record 
+       seq-name 
+       type 
+       source 
+       (parse-int start) 
+       (parse-int end) 
+       score 
+       strand 
+       (parse-gff2-frame frame)
+       attr-map))))
 
 (defn map-by-attrib [gff key]
   (reduce (fn [m r]
