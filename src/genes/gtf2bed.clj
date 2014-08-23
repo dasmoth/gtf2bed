@@ -1,6 +1,7 @@
 (ns genes.gtf2bed
   (:use clojure.java.io genes.utils genes.gff)
-  (:require [clojure.string :as str])
+  (:require [clojure.string :as str]
+            [clojure.tools.cli :refer [parse-opts]])
   (:gen-class))
 
 (defn- gtf2bed
@@ -84,8 +85,7 @@
      (or type "-")
      (or gene-id trans-id)
      (or gene-name gene-id trans-id)
-     (or gene-type "-")
-     (or tags "-")]))
+     (or gene-type "-")]))
 
 (defn gtf2beds [gff & {:keys [conv] :or {conv gtf2bed}}]
   (->>
@@ -103,11 +103,26 @@
   (sort-by second)
   (sort-by first)))
 
+(def cli-options
+  [["-f" "--format FORMAT" "Format"
+    :default gtf2bed
+    :default-desc "gencode"
+    :parse-fn {"gencode" gtf2bed
+               "bed20" gtf2bed20}
+    :validate [#(not (nil? %)) "Valid formats: gencode, bed20"]]])
+
+(defn usage [opts-summary]
+  (->> ["Usage: java genes.gtf2bed [options] file"
+        opts-summary]
+       (str/join \newline)))
+
 (defn -main [& args]
-  (unless (= (count args) 1)
-    (fail "Usage: gtf2bed input.gff"))
-  (doseq [b (->> (first args)
-		 (reader)
-		 (parse-gff2)
-		 (gtf2beds))]
-    (println (str/join "\t" b))))
+  (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
+    (cond
+     (not= (count arguments) 1) (fail (usage summary))
+     errors (fail errors))
+    (doseq [b (gtf2beds (->> (first arguments)
+                             (reader)
+                             (parse-gff2))
+                        :conv (:format options))]
+      (println (str/join "\t" b)))))

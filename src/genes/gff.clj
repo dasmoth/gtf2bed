@@ -37,7 +37,7 @@
 (defn parse-gff2 [r]
   (for [l (line-seq r) :when (and (not (= l ""))
           (not (= (first l) \#)))]
-    (let [[seq-name source type start end score strand frame attrs] (str/split l #"\t")
+    (let [[seq-name source type start end score strand frame attrs] (toke l "\t")
           attr-map (when attrs (parse-attrs2 attrs))]
       (make-gff-record 
        seq-name 
